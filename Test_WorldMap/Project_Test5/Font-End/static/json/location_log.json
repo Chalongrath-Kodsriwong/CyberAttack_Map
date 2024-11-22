@@ -16,11 +16,11 @@
         ]
     },
     {
-        "ip": "172.217.166.132",
-        "address": "Kuala Lumpur, Kuala Lumpur, Malaysia",
+        "ip": "101.110.115.255",
+        "address": "Auckland, Auckland, New Zealand",
         "location": [
-            3.14163,
-            101.695
+            -36.8509,
+            174.764
         ]
     }
 ]

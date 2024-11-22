@@ -7,6 +7,38 @@ function loadLocationData() {
     });
 }
 
+// ฟังก์ชันในการลากเส้นแบบค่อยๆ เกิดขึ้น
+function animateLine(map, start, end, color = 'red', speed = 50) {
+    // คำนวณจำนวนขั้นตอน (ระยะทางแบ่งย่อย)
+    const steps = 100;
+    const latStep = (end[0] - start[0]) / steps;
+    const lngStep = (end[1] - start[1]) / steps;
+
+    let currentLat = start[0];
+    let currentLng = start[1];
+    const latLngs = [[currentLat, currentLng]]; // เริ่มที่จุดแรก
+    const polyline = L.polyline(latLngs, { color: color, weight: 2 }).addTo(map);
+
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+        currentStep++;
+
+        // คำนวณตำแหน่งถัดไป
+        currentLat += latStep;
+        currentLng += lngStep;
+        latLngs.push([currentLat, currentLng]);
+
+        // อัปเดตเส้น Polyline
+        polyline.setLatLngs(latLngs);
+
+        // เมื่อถึงขั้นตอนสุดท้าย หยุด animation
+        if (currentStep >= steps) {
+            clearInterval(interval);
+        }
+    }, speed);
+}
+
 // ฟังก์ชันในการสร้างแผนที่และเพิ่มข้อมูล IP
 function initializeMap(locations) {
     var map = L.map('map').setView([0, 0], 2); // ตั้งค่าแผนที่ให้เริ่มที่ตำแหน่ง (0,0) และ zoom level 2
@@ -49,15 +81,11 @@ function initializeMap(locations) {
         }
     });
 
-    // เพิ่มเส้นจุดลากมายังตำแหน่งของ IP เป้าหมาย
+    // เพิ่มเส้นที่ลากมายังตำแหน่งของ IP เป้าหมายทีละขั้น
     if (targetLocation) {
         locations.forEach(function(location) {
             if (location.location && location.location !== targetLocation) {
-                L.polyline([location.location, targetLocation], {
-                    color: 'red',
-                    weight: 2,
-                    dashArray: '4, 8', // เส้นจุด (4px เส้น, 8px ช่องว่าง)
-                }).addTo(map);
+                animateLine(map, location.location, targetLocation, 'blue', 50); // สีฟ้าและความเร็ว 50ms
             }
         });
     }
