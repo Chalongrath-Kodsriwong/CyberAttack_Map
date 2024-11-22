@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Attack Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 80vh;
+      margin-top: 10px;
+    }
+    #controls {
+      margin: 10px;
+    }
+    #countryInput {
+      width: 300px;
+      padding: 5px;
+      font-size: 1rem;
+    }
+    #addCountry {
+      padding: 5px 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <input id="countryInput" type="text" placeholder="Enter a country name" />
+    <button id="addCountry">Add Country</button>
+  </div>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="cyber_map_attack.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Attack Map - 3D Globe with Country Labels</title>
+  <style>
+    body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    #map { width: 100%; height: 100%; }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <button id="show3D">3D View</button>
+  </div>
+  <div id="map"></div>
+
+  <!-- Include Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    let scene, camera, renderer, globe; // Three.js scene elements
+    const countries = [
+      { name: 'Thailand', lat: 15.8700, lon: 100.9925 },
+      { name: 'USA', lat: 37.0902, lon: -95.7129 },
+      { name: 'Russia', lat: 55.7558, lon: 37.6173 },
+      { name: 'Brazil', lat: -14.2350, lon: -51.9253 },
+      { name: 'India', lat: 20.5937, lon: 78.9629 }
+    ];
+
+    // Initialize 3D Globe using Three.js
+    const init3DMap = () => {
+      // Set up the scene, camera, and renderer
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById('map').appendChild(renderer.domElement);
+
+      // Create a globe (sphere) with a simple material
+      const geometry = new THREE.SphereGeometry(5, 50, 50);  // radius, widthSegments, heightSegments
+      const material = new THREE.MeshBasicMaterial({ color: 0x00aaff, wireframe: true });  // Blue wireframe globe
+      globe = new THREE.Mesh(geometry, material);
+      scene.add(globe);
+
+      // Add country labels on the globe
+      countries.forEach((country) => {
+        const { name, lat, lon } = country;
+
+        // Convert latitude/longitude to 3D spherical coordinates
+        const phi = THREE.MathUtils.degToRad(90 - lat); // Convert latitude to polar angle
+        const theta = THREE.MathUtils.degToRad(lon + 180); // Convert longitude to azimuthal angle
+
+        // Convert spherical coordinates to Cartesian coordinates
+        const x = 5 * Math.sin(phi) * Math.cos(theta);
+        const y = 5 * Math.sin(phi) * Math.sin(theta);
+        const z = 5 * Math.cos(phi);
+
+        // Create a label for each country
+        const loader = new THREE.FontLoader();
+        loader.load('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/fonts/helvetiker_regular.typeface.json', (font) => {
+          const textGeometry = new THREE.TextGeometry(name, {
+            font: font,
+            size: 0.4,
+            height: 0.1,
+          });
+
+          const textMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+          const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+          textMesh.position.set(x, y, z);
+          textMesh.lookAt(camera.position); // Make the text face the camera
+
+          scene.add(textMesh);
+        });
+      });
+
+      // Camera position
+      camera.position.z = 15;
+
+      // Animate the scene
+      const animate = function () {
+        requestAnimationFrame(animate);
+        globe.rotation.y += 0.01; // Rotate globe
+        renderer.render(scene, camera);
+      };
+      animate();
+    };
+
+    // Initially load the 3D map
+    init3DMap();
+
+    // Handle resizing of window
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
+</body>
+</html>

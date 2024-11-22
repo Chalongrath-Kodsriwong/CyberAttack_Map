@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attack Topology Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 80vh;
+      margin-top: 10px;
+    }
+    #controls {
+      margin: 10px;
+    }
+    #countryInput, #ipInput {
+      width: 300px;
+      padding: 5px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    #addCountry, #getIPDetails {
+      padding: 5px 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <input id="countryInput" type="text" placeholder="Enter a country name" />
+    <button id="addCountry">Add Country</button>
+    <br />
+    <input id="ipInput" type="text" placeholder="Enter an IP address" />
+    <button id="getIPDetails">Get IP Details</button>
+  </div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
