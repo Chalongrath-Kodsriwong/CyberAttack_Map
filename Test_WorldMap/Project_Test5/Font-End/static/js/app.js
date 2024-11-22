@@ -44,9 +44,10 @@ function initializeMap(locations) {
 }
 
 // เมื่อฟอร์มถูกส่ง
-$('#location-form').on('submit', function(e) {
+$('#location-form').on('submit', function (e) {
     e.preventDefault();
 
+    // ส่งฟอร์มแบบปกติด้วย JavaScript
     var ip = $('#ip').val();
     var url = $('#url').val();
 
@@ -57,30 +58,20 @@ $('#location-form').on('submit', function(e) {
             ip: ip,
             url: url
         },
-        success: function(data) {
-            // แสดงผลข้อมูลที่ได้รับมา
-            initializeMap(data);  // แสดงแผนที่ใหม่
-            $('#details').empty();  // เคลียร์รายละเอียดเก่า
-            data.forEach(function(location) {
-                if (location.location) {
-                    $('#details').append(`
-                        <div>
-                            <h3>IP: ${location.ip}</h3>
-                            <p><b>Address:</b> ${location.address}</p>
-                            <p><b>Location:</b> (${location.location[0]}, ${location.location[1]})</p>
-                        </div>
-                    `);
-                }
-            });
+        success: function () {
+            // รีเฟรชหน้าเว็บเมื่อสำเร็จ
+            window.location.reload();
         },
-        error: function() {
+        error: function () {
             alert("Error: Failed to get location data");
         }
     });
 
+    // ล้างค่าในฟอร์มหลังการส่ง
     $('#ip').val('');
     $('#url').val('');
 });
+
 
 // เรียกใช้ฟังก์ชันในการโหลดข้อมูลเมื่อหน้าโหลด
 loadLocationData();
