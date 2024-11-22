@@ -1,0 +1,34 @@
+[
+    {
+        "ip": "8.8.8.8",
+        "address": "Ashburn, Virginia, United States",
+        "location": [
+            39.03,
+            -77.5
+        ]
+    },
+    {
+        "ip": "102.222.79.255",
+        "address": "Moscow, Moscow, Russia",
+        "location": [
+            55.7558,
+            37.6173
+        ]
+    },
+    {
+        "ip": "184.22.180.231",
+        "address": "Bangkok, Bangkok, Thailand",
+        "location": [
+            13.6671,
+            100.5775
+        ]
+    },
+    {
+        "ip": "118.198.118.23",
+        "address": "Guangzhou, Guangdong, China",
+        "location": [
+            23.129,
+            113.2643
+        ]
+    }
+]
