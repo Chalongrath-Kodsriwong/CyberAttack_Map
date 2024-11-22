@@ -14,5 +14,13 @@
             39.03,
             -77.5
         ]
+    },
+    {
+        "ip": "172.217.166.132",
+        "address": "Kuala Lumpur, Kuala Lumpur, Malaysia",
+        "location": [
+            3.14163,
+            101.695
+        ]
     }
 ]

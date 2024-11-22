@@ -29,6 +29,7 @@ def get_location(ip, log_data):
     except Exception as e:
         log_data.append({"ip": ip, "error": f"Error retrieving location data: {e}"})
 
+
 def initialize_local_ip():
     """ ดึง IP Address ของเครื่องครั้งแรกเมื่อโปรแกรมเริ่มต้น """
     global local_ip_data
@@ -52,9 +53,11 @@ def initialize_local_ip():
     with open("Font-End/static/json/location_log.json", "w") as json_file:
         json.dump(log_data, json_file, indent=4)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/get_location', methods=['POST'])
 def get_location_route():
@@ -63,14 +66,12 @@ def get_location_route():
     ip = request.form.get('ip')
     url = request.form.get('url')
 
-    # อ่าน log เดิม
     if os.path.exists("Font-End/static/json/location_log.json"):
         with open("Font-End/static/json/location_log.json", "r") as json_file:
             log_data = json.load(json_file)
     else:
         log_data = local_ip_data or []
 
-    # รับข้อมูลจากผู้ใช้ (IP หรือ URL)
     if ip:
         get_location(ip, log_data)
     elif url:
@@ -79,11 +80,11 @@ def get_location_route():
     else:
         return jsonify({"error": "No IP or URL provided"}), 400
 
-    # บันทึกข้อมูลที่อัปเดต
     with open("Font-End/static/json/location_log.json", "w") as json_file:
         json.dump(log_data, json_file, indent=4)
 
     return jsonify(log_data)
+
 
 if __name__ == '__main__':
     # เรียก initialize_local_ip() เพื่อรันเมื่อเซิร์ฟเวอร์เริ่มต้น
