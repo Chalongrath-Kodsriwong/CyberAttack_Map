@@ -14,7 +14,7 @@ def get_location(ip, log_data):
 
         if data['status'] == 'fail':
             log_data.append({"ip": ip, "error": f"Error: {data['message']}"})
-            return
+
 
         location_data = {
             "ip": data['query'],
@@ -27,11 +27,9 @@ def get_location(ip, log_data):
     except Exception as e:
         log_data.append({"ip": ip, "error": f"Error retrieving location data: {e}"})
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/get_location', methods=['POST'])
 def get_location_route():
@@ -52,21 +50,17 @@ def get_location_route():
         get_location(ip, log_data)
     else:
         return jsonify({"error": "No IP or URL provided"}), 400
-
+    
     # ใช้ IP Address ปัจจุบันของเครื่อง
     ip = requests.get('https://api.ipify.org').text
     get_location(ip, log_data)
-
-    # สุ่ม IPv4 Address
-    # ip = f"{random.randint(1, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
-    # get_location(ip, log_data)
 
     # บันทึกข้อมูลทั้งหมดลงไฟล์ JSON
     with open("Font-End/static/json/location_log.json", "w") as json_file:
         json.dump(log_data, json_file, indent=4)
 
-    return render_template('result.html', log_data=log_data)
-
+    # ส่งข้อมูล log กลับไปยัง client
+    return jsonify(log_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

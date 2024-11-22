@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IP Location Topology Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
         #map { height: 600px; }
         .details { margin-top: 20px; }
@@ -15,17 +17,12 @@
     <div id="map"></div>
     <div id="details" class="details"></div>
 
-    <h2>Enter IP or URL to get location</h2>
-    <form action="/get_location" method="post">
-        <label for="ip">IP Address:</label>
-        <input type="text" name="ip" id="ip"><br>
-        <label for="url">URL:</label>
-        <input type="text" name="url" id="url"><br>
-        <button type="submit">Submit</button>
+    <form id="location-form">
+        <input type="text" id="ip" placeholder="Enter IP">
+        <input type="text" id="url" placeholder="Enter URL">
+        <button type="submit">Get Location</button>
     </form>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="/static/js/app.js"></script>
+    <script src="static/js/app.js"></script>
 </body>
 </html>

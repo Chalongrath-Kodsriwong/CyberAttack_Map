@@ -43,5 +43,44 @@ function initializeMap(locations) {
     });
 }
 
-// โหลดข้อมูลเมื่อโหลดเพจ
+// เมื่อฟอร์มถูกส่ง
+$('#location-form').on('submit', function(e) {
+    e.preventDefault();
+
+    var ip = $('#ip').val();
+    var url = $('#url').val();
+
+    $.ajax({
+        url: '/get_location',
+        method: 'POST',
+        data: {
+            ip: ip,
+            url: url
+        },
+        success: function(data) {
+            // แสดงผลข้อมูลที่ได้รับมา
+            initializeMap(data);  // แสดงแผนที่ใหม่
+            $('#details').empty();  // เคลียร์รายละเอียดเก่า
+            data.forEach(function(location) {
+                if (location.location) {
+                    $('#details').append(`
+                        <div>
+                            <h3>IP: ${location.ip}</h3>
+                            <p><b>Address:</b> ${location.address}</p>
+                            <p><b>Location:</b> (${location.location[0]}, ${location.location[1]})</p>
+                        </div>
+                    `);
+                }
+            });
+        },
+        error: function() {
+            alert("Error: Failed to get location data");
+        }
+    });
+
+    $('#ip').val('');
+    $('#url').val('');
+});
+
+// เรียกใช้ฟังก์ชันในการโหลดข้อมูลเมื่อหน้าโหลด
 loadLocationData();
