@@ -1,26 +1,10 @@
 [
     {
-        "ip": "184.22.180.231",
-        "address": "Bangkok, Bangkok, Thailand",
-        "location": [
-            13.6671,
-            100.5775
-        ]
-    },
-    {
         "ip": "8.8.8.8",
         "address": "Ashburn, Virginia, United States",
         "location": [
             39.03,
             -77.5
-        ]
-    },
-    {
-        "ip": "101.110.115.255",
-        "address": "Auckland, Auckland, New Zealand",
-        "location": [
-            -36.8509,
-            174.764
         ]
     }
 ]

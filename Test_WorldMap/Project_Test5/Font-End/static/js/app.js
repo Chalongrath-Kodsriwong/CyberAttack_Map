@@ -1,18 +1,42 @@
-// ฟังก์ชันในการโหลดข้อมูล location_log.json
-function loadLocationData() {
-    $.getJSON('/static/json/location_log.json', function(data) {
-        initializeMap(data);
-    }).fail(function() {
-        console.log("Error: Failed to load location_log.json");
-    });
+let map; // ตัวแปรเก็บแผนที่
+let markers = []; // เก็บตัว marker เพื่อใช้งานซ้ำ
+let userLocation = null; // ตำแหน่งของผู้ใช้ (จุดเริ่มต้น)
+
+// ฟังก์ชันเพิ่มข้อมูล Log ใหม่ในหน้าเว็บ
+function appendLog(location) {
+    if (location.location) {
+        // สร้าง marker สำหรับตำแหน่งใหม่
+        let marker = L.marker(location.location).addTo(map);
+        markers.push(marker);
+
+        // ตั้งข้อความเมื่อคลิก marker
+        marker.bindPopup(`
+            <b>IP: ${location.ip}</b><br>
+            <b>Address:</b> ${location.address}<br>
+            <b>Location:</b> (${location.location[0]}, ${location.location[1]})
+        `);
+
+        // อัปเดต Log ในส่วนของ #details
+        $('#details').append(`
+            <div>
+                <h3>IP: ${location.ip}</h3>
+                <p><b>Address:</b> ${location.address}</p>
+                <p><b>Location:</b> (${location.location[0]}, ${location.location[1]})</p>
+            </div>
+        `);
+
+        // ลากเส้นแบบแอนิเมชันจากตำแหน่งใหม่ไปยังตำแหน่งของผู้ใช้งาน
+        if (userLocation) {
+            animateLine(map, location.location, userLocation, 'red', 10); // ใช้แอนิเมชัน
+        }
+    }
 }
 
-// ฟังก์ชันในการลากเส้นแบบค่อยๆ เกิดขึ้น
+// ฟังก์ชันสำหรับลากเส้นแบบค่อยๆ ลากทีละขั้น
 function animateLine(map, start, end, color = 'red', speed = 50) {
-    // คำนวณจำนวนขั้นตอน (ระยะทางแบ่งย่อย)
-    const steps = 100;
-    const latStep = (end[0] - start[0]) / steps;
-    const lngStep = (end[1] - start[1]) / steps;
+    const steps = 100; // จำนวนขั้นตอนในการลากเส้น
+    const latStep = (end[0] - start[0]) / steps; // การเปลี่ยนแปลงละติจูดต่อขั้น
+    const lngStep = (end[1] - start[1]) / steps; // การเปลี่ยนแปลงลองจิจูดต่อขั้น
 
     let currentLat = start[0];
     let currentLng = start[1];
@@ -35,89 +59,82 @@ function animateLine(map, start, end, color = 'red', speed = 50) {
         // เมื่อถึงขั้นตอนสุดท้าย หยุด animation
         if (currentStep >= steps) {
             clearInterval(interval);
+
+            // เพิ่มเอฟเฟกต์การยิง
+            shootEffect(map, end, color);
         }
     }, speed);
 }
 
-// ฟังก์ชันในการสร้างแผนที่และเพิ่มข้อมูล IP
-function initializeMap(locations) {
-    var map = L.map('map').setView([0, 0], 2); // ตั้งค่าแผนที่ให้เริ่มที่ตำแหน่ง (0,0) และ zoom level 2
-
-    // เพิ่มแผนที่พื้นฐาน (Tile Layer)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+// ฟังก์ชันสำหรับสร้างเอฟเฟกต์การยิงเมื่อถึงปลายทาง
+function shootEffect(map, position, color = 'red') {
+    const circle = L.circle(position, {
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.5,
+        radius: 50
     }).addTo(map);
 
-    // กำหนด IP เป้าหมาย
-    const targetIp = "184.22.180.231";
-    let targetLocation = null;
-
-    // วนลูปข้อมูลแต่ละรายการ
-    locations.forEach(function(location) {
-        if (location.location) {
-            // สร้าง marker สำหรับแต่ละ IP
-            var marker = L.marker([location.location[0], location.location[1]]).addTo(map);
-
-            // เมื่อคลิกที่ marker ให้แสดงรายละเอียด IP
-            marker.bindPopup(`
-                <b>IP: ${location.ip}</b><br>
-                <b>Address: </b>${location.address}<br>
-                <b>Location: </b>(${location.location[0]}, ${location.location[1]})
-            `);
-
-            // บันทึกตำแหน่งของ IP เป้าหมาย
-            if (location.ip === targetIp) {
-                targetLocation = location.location;
-            }
-
-            // สร้างข้อมูลในส่วนรายละเอียด
-            $('#details').append(`
-                <div>
-                    <h3>IP: ${location.ip}</h3>
-                    <p><b>Address:</b> ${location.address}</p>
-                    <p><b>Location:</b> (${location.location[0]}, ${location.location[1]})</p>
-                </div>
-            `);
-        }
-    });
-
-    // เพิ่มเส้นที่ลากมายังตำแหน่งของ IP เป้าหมายทีละขั้น
-    if (targetLocation) {
-        locations.forEach(function(location) {
-            if (location.location && location.location !== targetLocation) {
-                animateLine(map, location.location, targetLocation, 'blue', 50); // สีฟ้าและความเร็ว 50ms
-            }
-        });
-    }
+    // ลบเอฟเฟกต์หลังจากเวลาผ่านไป
+    setTimeout(() => {
+        map.removeLayer(circle);
+    }, 500);
 }
 
-// เมื่อฟอร์มถูกส่ง
-$('#location-form').on('submit', function (e) {
-    e.preventDefault();
+// ฟังก์ชันกำหนดตำแหน่ง IP ปัจจุบันของผู้ใช้งานเมื่อโปรแกรมเริ่มทำงาน
+function initializeLocation() {
+    $.ajax({
+        url: '/initialize_location',
+        method: 'GET',
+        success: function(locationData) {
+            appendLog(locationData); // เพิ่มตำแหน่งปัจจุบันลงในแผนที่และ Log
+            userLocation = locationData.location; // เก็บตำแหน่งของผู้ใช้งาน
+            map.setView(locationData.location, 5); // ตั้งค่าแผนที่ให้แสดงตำแหน่งนี้
+        },
+        error: function() {
+            alert("Error: Failed to initialize location");
+        }
+    });
+}
 
-    var ip = $('#ip').val();
-    var url = $('#url').val();
+// ฟังก์ชันเมื่อฟอร์มถูกส่ง
+$('#locationForm').submit(function(event) {
+    event.preventDefault();
+
+    const ip = $('#ip').val();
+    const url = $('#url').val();
 
     $.ajax({
         url: '/get_location',
         method: 'POST',
-        data: {
-            ip: ip,
-            url: url
+        data: { ip, url },
+        success: function(locationData) {
+            appendLog(locationData); // เพิ่ม Log ใหม่เข้าไปในหน้าเว็บ
         },
-        success: function () {
-            // รีเฟรชแผนที่เมื่อส่งข้อมูลสำเร็จ
-            loadLocationData();  // โหลดข้อมูลใหม่จากเซิร์ฟเวอร์
-        },
-        error: function () {
+        error: function() {
             alert("Error: Failed to get location data");
         }
     });
 
-    // ล้างค่าในฟอร์มหลังการส่ง
     $('#ip').val('');
     $('#url').val('');
 });
 
-// เรียกใช้ฟังก์ชันในการโหลดข้อมูลเมื่อหน้าโหลด
-loadLocationData();
+// ฟังก์ชันสำหรับสร้างแผนที่เมื่อหน้าเว็บโหลด
+function initializeMap() {
+    map = L.map('map', {
+        minZoom: 2, // กำหนดการซูมออกน้อยที่สุด (ระดับ 2)
+        maxZoom: 19 // ยังคงการซูมเข้าเดิมไว้
+    }).setView([0, 0], 2); // ตั้งค่าแผนที่เริ่มต้น
+
+    // เพิ่ม Tile Layer แบบโทนดำและน้ำเงิน
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+}
+
+// เรียกใช้งานเมื่อหน้าเว็บโหลด
+initializeMap();
+initializeLocation(); // ปักมุดตำแหน่งปัจจุบันของผู้ใช้งาน
