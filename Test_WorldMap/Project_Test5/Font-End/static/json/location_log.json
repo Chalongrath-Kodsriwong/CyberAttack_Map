@@ -14,5 +14,21 @@
             13.6671,
             100.5775
         ]
+    },
+    {
+        "ip": "101.110.115.255",
+        "address": "Auckland, Auckland, New Zealand",
+        "location": [
+            -36.8509,
+            174.764
+        ]
+    },
+    {
+        "ip": "184.22.180.231",
+        "address": "Bangkok, Bangkok, Thailand",
+        "location": [
+            13.6671,
+            100.5775
+        ]
     }
 ]
