@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Configuration
 protocol = 'https'
-host = '210.246.200.230'
+host = '210.246.200.155'
 port = 55000
 user = 'wazuh'
 password = 'siAxq1+rPq*O6tcG?IbfWkmhxPKoPBAV'

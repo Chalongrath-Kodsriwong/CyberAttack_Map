@@ -1,5 +1,13 @@
 [
     {
+        "ip": "2405:9800:b930:237a:2501:5910:21de:bc22",
+        "address": "Phra Nakhon Si Ayutthaya, Phra Nakhon Si Ayutthaya, Thailand",
+        "location": [
+            14.3755,
+            100.5663
+        ]
+    },
+    {
         "ip": "8.8.8.8",
         "address": "Ashburn, Virginia, United States",
         "location": [

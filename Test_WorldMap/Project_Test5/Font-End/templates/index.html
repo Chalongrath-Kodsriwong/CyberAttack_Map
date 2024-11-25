@@ -10,18 +10,21 @@
     <style>
         #map { height: 600px; }
         .details { margin-top: 20px; }
+        form{
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
     <h1>IP Location Topology Map</h1>
-    <div id="map"></div>
-    <div id="details" class="details"></div>
-
     <form id="locationForm">
         <input type="text" id="ip" placeholder="Enter IP">
         <input type="text" id="url" placeholder="Enter URL">
         <button type="submit">Get Location</button>
     </form>
+    <div id="map"></div>
+    <div id="details" class="details"></div>
+
 
     <script src="static/js/app.js"></script>
 </body>
