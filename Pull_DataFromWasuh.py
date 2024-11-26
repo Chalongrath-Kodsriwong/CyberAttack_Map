@@ -13,7 +13,7 @@ protocol = 'https'
 host = '210.246.200.155'
 port = 55000
 user = 'wazuh'
-password = 'siAxq1+rPq*O6tcG?IbfWkmhxPKoPBAV'
+password = 'mIy*Lt5Z5b7mKvHcZYxd+h3WTbN6KPFN'
 login_endpoint = 'security/user/authenticate'
 
 login_url = f"{protocol}://{host}:{port}/{login_endpoint}"
